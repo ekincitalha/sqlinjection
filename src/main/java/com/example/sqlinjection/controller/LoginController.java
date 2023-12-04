@@ -1,5 +1,6 @@
 package com.example.sqlinjection.controller;
 
+import com.example.sqlinjection.entity.User;
 import com.example.sqlinjection.entity.dto.UserRequestDTO;
 import com.example.sqlinjection.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -21,16 +22,17 @@ public class LoginController {
     @PostMapping("/login")
     @CrossOrigin(origins = "http://localhost:4200")
     @ResponseBody
-    public ResponseEntity<Map<String, String>> login(@RequestBody UserRequestDTO userRequestDTO) {
-        boolean isOk = userService.unsafeJpaFindAccountByUsernameAndPassword(userRequestDTO);
-        Map<String, String> response = new HashMap<>();
+    public ResponseEntity<Map<String, User>> login(@RequestBody UserRequestDTO userRequestDTO) {
+        User user = userService.unsafeJpaFindAccountByUsernameAndPassword(userRequestDTO);
+        //boolean isOk = userService.unsafeProcedurFindAccountByUsernameAndPassword(userRequestDTO);
+        Map<String, User> response = new HashMap<>();
 
-        if (isOk) {
-            response.put("message", "success");
+        if (user!=null) {
+            response.put("user", user);
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
         } else {
-            response.put("message", "user not found");
+            response.put("message", user);
 
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
